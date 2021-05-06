@@ -1,5 +1,52 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1529479120150597662
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7715716917439465889}
+  - component: {fileID: 8680732387435590636}
+  m_Layer: 5
+  m_Name: Grid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7715716917439465889
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529479120150597662}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4877681455142436881}
+  - {fileID: 4877681454653440745}
+  - {fileID: 4877681455481000305}
+  m_Father: {fileID: 4877681455276845666}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1880, y: 20}
+  m_Pivot: {x: 0, y: 0}
+--- !u!222 &8680732387435590636
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529479120150597662}
+  m_CullTransparentMesh: 1
 --- !u!1 &4877681454310213793
 GameObject:
   m_ObjectHideFlags: 0
@@ -29,7 +76,7 @@ RectTransform:
   m_Children:
   - {fileID: 4877681454910989717}
   m_Father: {fileID: 4877681455276845666}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -65,7 +112,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4877681455276845666}
+  m_Father: {fileID: 7715716917439465889}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -381,7 +428,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4877681455276845666}
+  m_Father: {fileID: 7715716917439465889}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -448,9 +495,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4877681455142436881}
-  - {fileID: 4877681454653440745}
-  - {fileID: 4877681455481000305}
+  - {fileID: 7715716917439465889}
   - {fileID: 4877681456009438081}
   - {fileID: 4877681454310213792}
   m_Father: {fileID: 4877681455540355378}
@@ -542,11 +587,11 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4877681455481000310}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4877681455276845666}
+  m_Father: {fileID: 7715716917439465889}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -682,13 +727,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeline_panel: {fileID: 4877681455540355375}
   timeline_handle: {fileID: 4877681456188526388}
-  bottom_timeline_grid_main: {fileID: 4877681454653440744}
-  bottom_timeline_grid_sub: {fileID: 4877681455142436880}
-  bottom_timeline_progress_bar: {fileID: 4877681455276845597}
+  grid_main: {fileID: 4877681454653440744}
+  grid_sub: {fileID: 4877681455142436880}
+  timeline_bar: {fileID: 4877681455276845666}
   time_text: {fileID: 4877681454910989719}
   time_text_copy: {fileID: 4877681455037469364}
-  timeline_grid_value_root: {fileID: 4877681455481000305}
-  timeline_grid_value_text_tr: {fileID: 4877681456009438081}
+  grid: {fileID: 7715716917439465889}
+  grid_value_root: {fileID: 4877681455481000305}
+  grid_value_text_tr: {fileID: 4877681456009438081}
   mainGridTotalTime: 20
 --- !u!1 &4877681456009438086
 GameObject:
@@ -721,7 +767,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4877681455276845666}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
