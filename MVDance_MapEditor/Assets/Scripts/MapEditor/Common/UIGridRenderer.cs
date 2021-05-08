@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace MVDance.MapEditor
 {
-    public class UIGridRenderer : Graphic
+    public class UIGridRenderer : MaskableGraphic
     {
         [Header("-- Base Config --")]
         [SerializeField] protected float thickness = 1f;
@@ -11,6 +11,8 @@ namespace MVDance.MapEditor
 
         protected float cellWidth;
         protected float cellHeight;
+
+        
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();

@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace MVDance.MapEditor
 {
-    public class TimelineHandle : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
+    public class TimelineInteractable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
     {
         public System.Action<PointerEventData> Action_OnBeginDrag;
         public System.Action<PointerEventData> Action_OnEndDrag;
