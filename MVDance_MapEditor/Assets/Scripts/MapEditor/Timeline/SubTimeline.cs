@@ -25,6 +25,23 @@ namespace MVDance.MapEditor
         public float GetProgress() => scroll.value;
         public float GetDragVal() => dragEndVal - dragStartVal;
         public bool IsDragging() => isDragging;
+        public void AddGridXPosition(float deltaOffsetX)
+        {
+            sub_timeline_grid.AddGridXPosition(deltaOffsetX);
+        }
+        public void SetGridXPosition(float newPosX)
+        {
+            sub_timeline_grid.SetGridXPosition(newPosX);
+        }
+        public void AddGridValueXPosition(float deltaOffsetX)
+        {
+            sub_timeline_grid.AddGridValueXPosition(deltaOffsetX);
+        }
+        public void SetGridValueXPosition(float newPosX)
+        {
+            sub_timeline_grid.SetGridValueXPosition(newPosX);
+        }
+        public double GetGridOriginWidth() => sub_timeline_grid.GetGridOriginWidth();
         public void UpdateProgress(float newProgress)
         {
             scroll.value = newProgress;

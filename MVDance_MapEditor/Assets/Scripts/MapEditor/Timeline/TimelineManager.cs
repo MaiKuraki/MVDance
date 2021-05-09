@@ -36,9 +36,11 @@ namespace MVDance.MapEditor
         Action Action_OnTimelinePreScale;
         TimelineType eTimelineType = TimelineType.Second;
 
-        int max_main_grid_amount = 20;
+        int max_visible_grid_amount = 20;
         int min_main_grid_amount = 1;
         int visible_main_grid_amount;
+        double lastTimeGridOffset = 0;
+        double totalGridDragOffset = 0;
 
         private void Awake()
         {
@@ -63,7 +65,30 @@ namespace MVDance.MapEditor
                 long startVal = index * visible_main_grid_amount;
                 timeline_sub.UpdateHandleText(eTimelineType, timelineTotalTime, startVal);
             };
-            timeline_main.Action_OnScrollValueChanged += f => { };
+            timeline_main.Action_OnScrollValueChanged += f => {
+                int totalCount = Mathf.CeilToInt((float)(YourTotalTimeSet / timelineTotalTime));
+                // print(f  * timelineTotalTime * (totalCount - 1));
+                string main_timeline_head_str = (f * timelineTotalTime * (totalCount - 1)).ToString("f2");
+                string main_timeline_tail_str = (f * timelineTotalTime * totalCount).ToString("f2");
+                timeline_main.UpdateText(main_timeline_head_str, main_timeline_tail_str);
+                double oneGridWidth = timeline_sub.GetGridOriginWidth() / visible_main_grid_amount;
+                double dragOffset = (f * (totalCount - 1) * timeline_sub.GetGridOriginWidth());
+                double dragOffsetDelta = dragOffset - lastTimeGridOffset;
+
+                totalGridDragOffset += dragOffsetDelta;
+                if (totalGridDragOffset > oneGridWidth || totalGridDragOffset < -oneGridWidth)
+                {
+                    timeline_sub.SetGridXPosition(0);
+                    timeline_sub.SetGridValueXPosition(0);
+                    totalGridDragOffset = 0;
+                }
+
+                timeline_sub.AddGridXPosition(-(float)dragOffsetDelta);
+                timeline_sub.AddGridValueXPosition(-(float)dragOffsetDelta);
+
+                lastTimeGridOffset = dragOffset;
+                print(dragOffset);
+            };
 
             Action_OnTimelineScaled += () =>
             {
@@ -168,7 +193,8 @@ namespace MVDance.MapEditor
         {
             ResetMainTimeline();
             ResetSubTimeline();
-
+            lastTimeGridOffset = 0;
+            totalGridDragOffset = 0;
         }
         void ResetMainTimeline()
         {
@@ -258,14 +284,14 @@ namespace MVDance.MapEditor
         }
         void ScaleDownTimeline()
         {
-            if (visible_main_grid_amount < max_main_grid_amount) visible_main_grid_amount++;
+            if (visible_main_grid_amount < max_visible_grid_amount) visible_main_grid_amount++;
 
             timelineTotalTime = visible_main_grid_amount;
         }
         void InitTimeline()
         {
             /** ------ */
-            visible_main_grid_amount = max_main_grid_amount;
+            visible_main_grid_amount = max_visible_grid_amount;
             timelineTotalTime = visible_main_grid_amount;
             timeline_sub.UpdateProgress(0);
 
@@ -288,6 +314,10 @@ namespace MVDance.MapEditor
         {
             int totalCount = Mathf.CeilToInt((float)(YourTotalTimeSet / timelineTotalTime));
             timeline_main.UpdateScrollSize(1.0f / totalCount);
+
+            string main_timeline_head_str = string.Format("{0:00.00}", totalProgressedTimeStamp.ToString("f2"));
+            string main_timeline_tail_str = string.Format("{0:00.00}", (totalProgressedTimeStamp + timelineTotalTime).ToString("f2"));
+            timeline_main.UpdateText(main_timeline_head_str, main_timeline_tail_str);
         }
 
         void TryLockGridToCursor()

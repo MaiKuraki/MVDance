@@ -12,16 +12,22 @@ namespace MVDance.MapEditor
         [SerializeField] Transform grid_value_root;
         [SerializeField] Transform grid_value_text_tr;
 
-        int max_main_grid_amount = 20;
+        int max_main_grid_amount = 21;
         int min_main_grid_amount = 1;
         int visible_main_grid_amount;
 
         double gridOriginWidth;
         RectTransform grid_rt;
+        RectTransform grid_value_root_rt;
+
+
+        public double GetGridOriginWidth() => gridOriginWidth;
 
         void Awake()
         {
             grid_rt = grid_root.GetComponent<RectTransform>();
+            grid_value_root_rt = grid_value_root.GetComponent<RectTransform>();
+
             gridOriginWidth = grid_rt.rect.width;
 
             visible_main_grid_amount = max_main_grid_amount;
@@ -33,6 +39,28 @@ namespace MVDance.MapEditor
             grid_sub.gameObject.SetActive(true);
         }
 
+        public void AddGridXPosition(float deltaOffsetX)
+        {
+            grid_root.localPosition = new Vector2(grid_root.localPosition.x + deltaOffsetX, grid_root.localPosition.y);
+        }
+
+        public void SetGridXPosition(float newPosX)
+        {
+            grid_root.localPosition = new Vector2(newPosX, grid_root.localPosition.y);
+        }
+
+        public void AddGridValueXPosition(float deltaOffsetX)
+        {
+            grid_value_root.localPosition = new Vector2(grid_value_root.localPosition.x + deltaOffsetX, grid_value_root.localPosition.y);
+        }
+
+        public void SetGridValueXPosition(float newPosX)
+        {
+            //  TODO 
+            //  don't know why zero doesn't work
+            grid_value_root.localPosition = new Vector2(newPosX, grid_value_root.localPosition.y);
+        }
+
         public void RefreshGrid(int newVidibleGridAmount, long startValue)
         {
             /** -- refresh render -- */
@@ -42,7 +70,6 @@ namespace MVDance.MapEditor
             grid_rt.sizeDelta = new Vector2((float)full_timeline_width, grid_rt.rect.height);
 
             /** -- refresh number value -- */
-            RectTransform grid_value_root_rt = grid_value_root.GetComponent<RectTransform>();
             grid_value_root_rt.sizeDelta = new Vector2((float)full_timeline_width, grid_value_root_rt.rect.height);
             for (int i = 0; i < grid_value_root.childCount; i++)
             {
