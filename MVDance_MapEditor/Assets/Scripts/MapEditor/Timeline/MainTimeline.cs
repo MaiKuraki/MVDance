@@ -28,6 +28,10 @@ namespace MVDance.MapEditor
             scroll.size = newSize;
         }
 
+        public float GetProgress() => scroll.value;
+
+        public float GetHandleSize() => scroll.size;
+
         public void UpdateProgress(float newProgress)
         {
             scroll.value = newProgress;

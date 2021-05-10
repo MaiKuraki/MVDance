@@ -37,11 +37,12 @@ namespace MVDance.MapEditor
         {
             sub_timeline_grid.AddGridValueXPosition(deltaOffsetX);
         }
-        public void SetGridValueXPosition(float newPosX)
+        public void ResetGridValueXPosition()
         {
-            sub_timeline_grid.SetGridValueXPosition(newPosX);
+            sub_timeline_grid.ResetGridValueXPosition();
         }
         public double GetGridOriginWidth() => sub_timeline_grid.GetGridOriginWidth();
+        public double GetGridWidth() => sub_timeline_grid.GetGridWidth();
         public void UpdateProgress(float newProgress)
         {
             scroll.value = newProgress;
@@ -57,9 +58,9 @@ namespace MVDance.MapEditor
             handle_text.text = displayStr;
             handle_text_copy.text = displayStr;
         }
-        public void RefreshGrid(int newVisibleGridAmount, long newStartVal)
+        public void RefreshGrid(int newVisibleGridAmount, long startVal)
         {
-            sub_timeline_grid.RefreshGrid(newVisibleGridAmount, newStartVal);
+            sub_timeline_grid.RefreshGrid(newVisibleGridAmount, startVal);
         }
         private void Awake()
         {
