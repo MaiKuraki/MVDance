@@ -25,21 +25,17 @@ namespace MVDance.MapEditor
         public float GetProgress() => scroll.value;
         public float GetDragVal() => dragEndVal - dragStartVal;
         public bool IsDragging() => isDragging;
-        public void AddGridXPosition(float deltaOffsetX)
-        {
-            sub_timeline_grid.AddGridXPosition(deltaOffsetX);
-        }
         public void SetGridXPosition(float newPosX)
         {
             sub_timeline_grid.SetGridXPosition(newPosX);
         }
-        public void AddGridValueXPosition(float deltaOffsetX)
+        public void SetGridValueXPosition(float newOffsetPosition)
         {
-            sub_timeline_grid.AddGridValueXPosition(deltaOffsetX);
+            sub_timeline_grid.SetGridValueXPosition(newOffsetPosition);
         }
-        public void ResetGridValueXPosition()
+        public void UpdateGridValueTextVal(long startVal)
         {
-            sub_timeline_grid.ResetGridValueXPosition();
+            sub_timeline_grid.UpdateGridValueTextVal(startVal);
         }
         public double GetGridOriginWidth() => sub_timeline_grid.GetGridOriginWidth();
         public double GetGridWidth() => sub_timeline_grid.GetGridWidth();
@@ -58,9 +54,9 @@ namespace MVDance.MapEditor
             handle_text.text = displayStr;
             handle_text_copy.text = displayStr;
         }
-        public void RefreshGrid(int newVisibleGridAmount, long startVal)
+        public void RefreshGrid(int newVisibleGridAmount, long newStartVal)
         {
-            sub_timeline_grid.RefreshGrid(newVisibleGridAmount, startVal);
+            sub_timeline_grid.RefreshGrid(newVisibleGridAmount, newStartVal);
         }
         private void Awake()
         {

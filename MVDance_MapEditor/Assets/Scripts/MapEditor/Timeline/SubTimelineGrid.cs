@@ -21,6 +21,8 @@ namespace MVDance.MapEditor
         RectTransform grid_rt;
         RectTransform grid_value_root_rt;
 
+        double cachedOffsetX = 0;
+
 
         public double GetGridOriginWidth() => gridOriginWidth;
         public double GetGridWidth() => grid_rt.rect.width;
@@ -54,60 +56,44 @@ namespace MVDance.MapEditor
             }
         }
 
-        public void AddGridXPosition(float deltaOffsetX)
-        {
-            grid_root.localPosition = new Vector2(grid_root.localPosition.x + deltaOffsetX, grid_root.localPosition.y);
-        }
-
         public void SetGridXPosition(float newPosX)
         {
             grid_root.localPosition = new Vector2(newPosX, grid_root.localPosition.y);
         }
 
-        public void AddGridValueXPosition(float deltaOffsetX)
+        public void SetGridValueXPosition(float newOffsetPosition)
         {
             for (int i = 0; i < max_main_grid_amount + 1; i++)
             {
                 Transform t = grid_value_root.GetChild(i);
-                float posX = t.localPosition.x + deltaOffsetX;
+                float posX = i * grid_value_root_rt.rect.width / max_main_grid_amount + newOffsetPosition;
                 t.localPosition = new Vector2(posX, -10);
             }
 
-            // grid_value_root.localPosition = new Vector2(grid_value_root.localPosition.x + deltaOffsetX, grid_value_root.localPosition.y);
+            cachedOffsetX = newOffsetPosition;
         }
 
-        public void ResetGridValueXPosition()
+        public void UpdateGridValueTextVal(long startVal)
         {
-            //  TODO 
-
             for (int i = 0; i < max_main_grid_amount + 1; i++)
             {
                 Transform t = grid_value_root.GetChild(i);
-                double posX = i * grid_value_root_rt.rect.width / max_main_grid_amount;
-                t.localPosition = new Vector2((float)posX, -10);
+                t.GetComponent<Text>().text = (i + startVal).ToString();
             }
-
-            // grid_value_root.localPosition = new Vector2(newPosX, grid_value_root.localPosition.y);
         }
 
         public void RefreshGrid(int newVidibleGridAmount, long startVal)
         {
             /** -- refresh render -- */
-            double grid_ratio = max_main_grid_amount / (double)newVidibleGridAmount;
-            double full_timeline_width = gridOriginWidth * grid_ratio;
-            // print($"ratio{ratio}, targetWidth: {final_grid_width}");
+            double new_grid_ratio = max_main_grid_amount / (double)newVidibleGridAmount;
+            double full_timeline_width = gridOriginWidth * new_grid_ratio;
+
             grid_rt.sizeDelta = new Vector2((float)full_timeline_width, grid_rt.rect.height);
             grid_value_root_rt.sizeDelta = new Vector2((float)full_timeline_width, grid_value_root_rt.rect.height);
 
-            float oneGridWidth = grid_value_root_rt.rect.width / max_main_grid_amount;
             /** -- refresh number value -- */
-            for (int i = 0; i < max_main_grid_amount + 1; i++)
-            {
-                Transform t = grid_value_root.GetChild(i);
-                float posX = i * grid_value_root_rt.rect.width / max_main_grid_amount;     
-                t.localPosition = new Vector2(posX, -10);
-                t.GetComponent<Text>().text = (i + startVal).ToString();
-            }
+            SetGridValueXPosition(0);
+            UpdateGridValueTextVal(startVal);
         }
     }
 }
