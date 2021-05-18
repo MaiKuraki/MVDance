@@ -21,7 +21,7 @@ namespace MVDance.MapEditor
         float dragStartVal = 0;
         float dragEndVal = 0;
         bool isDragging = false;
-
+        Transform handle_root_tr;
         public float GetProgress() => scroll.value;
         public float GetDragVal() => dragEndVal - dragStartVal;
         public bool IsDragging() => isDragging;
@@ -39,11 +39,11 @@ namespace MVDance.MapEditor
         }
         public double GetGridOriginWidth() => sub_timeline_grid.GetGridOriginWidth();
         public double GetGridWidth() => sub_timeline_grid.GetGridWidth();
-        public void UpdateProgress(float newProgress)
+        public void SetProgress(float newProgress)
         {
             scroll.value = newProgress;
         }
-        public void UpdateHandleText(TimelineType timelineType, double inTimelineTotalTime, long startVal)
+        public void UpdateHandleText(TimelineType timelineType, double inTimelineTotalTime, double startVal)
         {
             long handleTime = (long)(GetProgress() * inTimelineTotalTime * 1000) + (long)(1000 * startVal);
             string displayStr = "NULL";
@@ -58,8 +58,14 @@ namespace MVDance.MapEditor
         {
             sub_timeline_grid.RefreshGrid(newVisibleGridAmount, newStartVal);
         }
+        public void SetCursorVisible(bool bNewShouldVidible)
+        {
+            handle_root_tr.gameObject.SetActive(bNewShouldVidible);
+        }
         private void Awake()
         {
+            handle_root_tr = handle_text.transform;
+
             scroll.onValueChanged.AddListener(f => Action_OnScrollValueChanged?.Invoke(f));
 
             handle.Action_OnDragging += d =>
