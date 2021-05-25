@@ -53,20 +53,20 @@ namespace MVDance.MapEditor
             timeline_handle.Action_OnPointerUp += dragOffset =>
             {
                 //  hold is drag, hold is pause
-                sub_timeline_drag_offset += timelineTotalTime * timeline_sub.GetDragVal();
+                sub_timeline_drag_offset += subTimelineTotalTime * timeline_sub.GetDragVal();
                 if (!isPaused) UpdateCanRun(true);
             };
 
             timeline_sub.Action_OnScrollValueChanged += f =>
             {
-                int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / timelineTotalTime));
-                long mainTimelineStartVal = (long)(timeline_main.GetProgress() * timelineTotalTime * (totalPageAmount - 1) * 1000.0);
-                timeline_sub.UpdateHandleText(eTimelineType, timelineTotalTime, (float)(mainTimelineStartVal / 1000.0));
+                int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
+                long mainTimelineActualStartVal = (long)(timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
+                timeline_sub.UpdateHandleText(eTimelineType, subTimelineTotalTime, (float)(mainTimelineActualStartVal / 1000.0));
             };
             timeline_main.Action_OnScrollValueChanged += f =>
             {
-                int totalCount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / timelineTotalTime));
-                long startValFloor = Mathf.FloorToInt((float)(timeline_main.GetProgress() * timelineTotalTime * (totalCount - 1)));
+                int totalCount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
+                long startValFloor = Mathf.FloorToInt((float)(timeline_main.GetProgress() * subTimelineTotalTime * (totalCount - 1)));
                 
                 UpdateMainTimelineBarText(totalCount);
                 UpdateSubtimelineOffset(startValFloor);
@@ -74,9 +74,9 @@ namespace MVDance.MapEditor
 
             Action_OnTimelineScaled += () =>
             {
-                int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / timelineTotalTime));
-                long mainTimelineStartVal = (long)(timeline_main.GetProgress() * timelineTotalTime * (totalPageAmount - 1) * 1000.0);
-                long startValFloor = Mathf.FloorToInt((float)(timeline_main.GetProgress() * timelineTotalTime * (totalPageAmount - 1)));
+                int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
+                long mainTimelineActualStartVal = (long)(timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
+                long startValFloor = Mathf.FloorToInt((float)(timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1)));
 
                 timeline_sub.RefreshGrid(visible_main_grid_amount, startValFloor);
                 
@@ -84,7 +84,7 @@ namespace MVDance.MapEditor
                 UpdateMainTimelineBarText(totalPageAmount);
                 UpdateSubtimelineOffset(startValFloor);
 
-                timeline_sub.UpdateHandleText(eTimelineType, timelineTotalTime, (float)(mainTimelineStartVal / 1000.0));
+                timeline_sub.UpdateHandleText(eTimelineType, subTimelineTotalTime, (float)(mainTimelineActualStartVal / 1000.0));
 
                 TryLockGridToCursor();
             };
@@ -148,9 +148,9 @@ namespace MVDance.MapEditor
         }
         double GetMainActualTimeOffset()
         {
-            int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / timelineTotalTime));
-            long subTimelineStartVal = (long)(timeline_main.GetActualProgress() * timelineTotalTime * (totalPageAmount - 1) * 1000.0);
-            long mainTimelineStartVal = (long)(timeline_main.GetProgress() * timelineTotalTime * (totalPageAmount - 1) * 1000.0);
+            int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
+            long subTimelineStartVal = (long)(timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
+            long mainTimelineStartVal = (long)(timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
             double main_timeline_drag_offset = (mainTimelineStartVal - subTimelineStartVal) / 1000.0;
             return main_timeline_drag_offset;
         }
@@ -177,7 +177,7 @@ namespace MVDance.MapEditor
         }
         private void UpdateSubtimelineOffset(long startVal)
         {
-            int totalCount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / timelineTotalTime));
+            int totalCount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
 
             //  there is one more invisible grid out of screen
             double oneGridWidth = timeline_sub.GetGridWidth() / (max_visible_grid_amount + 1);
@@ -191,8 +191,8 @@ namespace MVDance.MapEditor
         }
         private void UpdateMainTimelineBarText(int totalPageAmount)
         {
-            string main_timeline_head_str = (timeline_main.GetProgress() * timelineTotalTime * (totalPageAmount - 1)).ToString("f2");
-            string main_timeline_tail_str = (timeline_main.GetProgress() * timelineTotalTime * (totalPageAmount - 1) + timelineTotalTime).ToString("f2");
+            string main_timeline_head_str = (timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1)).ToString("f2");
+            string main_timeline_tail_str = (timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1) + subTimelineTotalTime).ToString("f2");
             timeline_main.UpdateText(main_timeline_head_str, main_timeline_tail_str);
         }
 
@@ -204,7 +204,7 @@ namespace MVDance.MapEditor
         bool bFirstTimePlaying = true;
 
         double timelineProgressTime = 0;
-        double timelineTotalTime = 0;
+        double subTimelineTotalTime = 0;
 
 
         Coroutine task_updateTime = null;
@@ -250,24 +250,23 @@ namespace MVDance.MapEditor
             {
                 yield return new WaitUntil(CanRunTimeline);
 
-
-
-                int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / timelineTotalTime));
-                int pageIndex = Mathf.FloorToInt((float)((GetTotalProgressedTime() / 1000.0) / timelineTotalTime));
+                int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
+                int pageIndex = Mathf.FloorToInt((float)((GetTotalProgressedTime() / 1000.0) / subTimelineTotalTime));
                 float mainProgressVal = totalPageAmount > 1 ? (float)((pageIndex * 2.0 / (totalPageAmount - 1)) / 2) : 0;
-                float subProgressVal = (GetTotalProgressedTime() - (long)(pageIndex * timelineTotalTime * 1000.0)) / (float)(timelineTotalTime * 1000.0);
+                float subProgressVal = (GetTotalProgressedTime() - (long)(pageIndex * subTimelineTotalTime * 1000.0)) / (float)(subTimelineTotalTime * 1000.0);
                 
                 timeline_main.SetProgress_Actual(mainProgressVal, subProgressVal);
 
-                long subTimelineStartVal = (long)(timeline_main.GetActualProgress() * timelineTotalTime * (totalPageAmount - 1) * 1000.0);
-                long subTimelineEndVal = (long)((timeline_main.GetActualProgress() * timelineTotalTime * (totalPageAmount - 1) + timelineTotalTime) * 1000.0);
-                long mainTimelineStartVal = (long)(timeline_main.GetProgress() * timelineTotalTime * (totalPageAmount - 1) * 1000.0);
-                long mainTimelineEndVal = (long)((timeline_main.GetProgress() * timelineTotalTime * (totalPageAmount - 1) + timelineTotalTime) * 1000.0);
+                long subTimelineStartVal = (long)(timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
+                long subTimelineEndVal = (long)((timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) + subTimelineTotalTime) * 1000.0);
+                long mainTimelineStartVal = (long)(timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
+                long mainTimelineActualStartVal = (long)(timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
+                long mainTimelineEndVal = (long)((timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1) + subTimelineTotalTime) * 1000.0);
 
                 timeline_sub.SetProgress(subProgressVal);
-                timeline_sub.UpdateHandleText(eTimelineType, timelineTotalTime, (float)(mainTimelineStartVal / 1000.0));
+                timeline_sub.UpdateHandleText(eTimelineType, subTimelineTotalTime, (float)(mainTimelineActualStartVal / 1000.0));
 
-                timeline_main.SyncProgressToActual();
+                //timeline_main.SyncProgressToActual();
 
             }
         }
@@ -286,23 +285,23 @@ namespace MVDance.MapEditor
         {
             if (visible_main_grid_amount > min_main_grid_amount) visible_main_grid_amount--;
 
-            timelineTotalTime = visible_main_grid_amount;
+            subTimelineTotalTime = visible_main_grid_amount;
         }
         void ScaleDownTimeline()
         {
             if (visible_main_grid_amount < max_visible_grid_amount) visible_main_grid_amount++;
 
-            timelineTotalTime = visible_main_grid_amount;
+            subTimelineTotalTime = visible_main_grid_amount;
         }
         void InitTimeline()
         {
             /** ------ */
             visible_main_grid_amount = max_visible_grid_amount;
-            timelineTotalTime = visible_main_grid_amount;
+            subTimelineTotalTime = visible_main_grid_amount;
    
             long startVal = 0;
             int pageIndex = 0;
-            int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / timelineTotalTime));
+            int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
             float mainProgressVal = totalPageAmount > 1 ? (((float)pageIndex / (totalPageAmount - 1))) : 0;
             timeline_main.UpdateScrollSize(1.0f / totalPageAmount);
             timeline_main.SetProgress(mainProgressVal);
@@ -310,7 +309,7 @@ namespace MVDance.MapEditor
 
             timeline_sub.SetProgress(0);
             timeline_sub.RefreshGrid(visible_main_grid_amount, startVal);
-            timeline_sub.UpdateHandleText(eTimelineType, timelineTotalTime, startVal);
+            timeline_sub.UpdateHandleText(eTimelineType, subTimelineTotalTime, startVal);
 
             RefreshTotalTimeLine(totalPageAmount);
             UpdateMainTimelineBarText(totalPageAmount);
