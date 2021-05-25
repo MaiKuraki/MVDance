@@ -73,17 +73,7 @@ namespace MVDance.MapEditor
 
         void PlayOrPause()
         {
-            shouldPlay = !shouldPlay;
-            if (shouldPlay)
-            {
-                videoPlayer_dev?.Play();
-                videoPlayer_in_game?.Play();
-            }
-            else
-            {
-                videoPlayer_dev?.Pause();
-                videoPlayer_in_game?.Pause();
-            }
+            timelineManager?.UpdatePauseState();
         }
 
         private void OnDestroy()
@@ -92,7 +82,6 @@ namespace MVDance.MapEditor
             timelineManager.OnTimelinePaused -= OnTimelinePaused;
             timelineManager.OnTimelineValueChanged -= OnTimelineValueChanged;
             timelineManager.OnDragMainTimeline -= CancelResetMainTimelineOffset;
-
         }
     }
 }

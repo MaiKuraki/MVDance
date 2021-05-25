@@ -144,7 +144,7 @@ namespace MVDance.MapEditor
             timelinePausedTime += pauseEndTime - pauseStartTime > 0 ? pauseEndTime - pauseStartTime : 0;
         }
 
-        void UpdatePauseState()
+        public void UpdatePauseState()
         {
             if (bFirstTimePlaying)
             {
