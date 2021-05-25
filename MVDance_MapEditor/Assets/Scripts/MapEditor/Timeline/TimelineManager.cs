@@ -59,9 +59,7 @@ namespace MVDance.MapEditor
 
             timeline_sub.Action_OnScrollValueChanged += f =>
             {
-                int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
-                long mainTimelineActualStartVal = (long)(timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
-                timeline_sub.UpdateHandleText(eTimelineType, subTimelineTotalTime, (float)(mainTimelineActualStartVal / 1000.0));
+                UpdateSubtimelineCursorVisual();
             };
             timeline_main.Action_OnScrollValueChanged += f =>
             {
@@ -69,7 +67,9 @@ namespace MVDance.MapEditor
                 long startValFloor = Mathf.FloorToInt((float)(timeline_main.GetProgress() * subTimelineTotalTime * (totalCount - 1)));
                 
                 UpdateMainTimelineBarText(totalCount);
+                
                 UpdateSubtimelineOffset(startValFloor);
+                UpdateSubTimelineProgress();
             };
 
             Action_OnTimelineScaled += () =>
@@ -82,9 +82,10 @@ namespace MVDance.MapEditor
                 
                 RefreshTotalTimeLine(totalPageAmount);            
                 UpdateMainTimelineBarText(totalPageAmount);
-                UpdateSubtimelineOffset(startValFloor);
 
-                timeline_sub.UpdateHandleText(eTimelineType, subTimelineTotalTime, (float)(mainTimelineActualStartVal / 1000.0));
+                UpdateSubtimelineOffset(startValFloor);
+                UpdateSubTimelineProgress();
+                UpdateSubtimelineCursorVisual();
 
                 TryLockGridToCursor();
             };
@@ -154,7 +155,11 @@ namespace MVDance.MapEditor
             double main_timeline_drag_offset = (mainTimelineStartVal - subTimelineStartVal) / 1000.0;
             return main_timeline_drag_offset;
         }
-        long GetPausedTime() => timelinePausedTime;
+        long GetPausedTime()
+        {
+            if (isPaused) return DateTime.Now.Ticks - pauseStartTime + timelinePausedTime;
+            else return timelinePausedTime;
+        }
         bool CanRunTimeline() => canRunTimeline && !isPaused;
         bool CanScale() => isMouseHoverOnTimeline;
         bool IsTimelineRunning() => pauseStartTime < pauseEndTime || !bFirstTimePlaying;
@@ -203,7 +208,6 @@ namespace MVDance.MapEditor
         double sub_timeline_drag_offset = 0;
         bool bFirstTimePlaying = true;
 
-        double timelineProgressTime = 0;
         double subTimelineTotalTime = 0;
 
 
@@ -242,20 +246,38 @@ namespace MVDance.MapEditor
             TryRunSubTimeline();
         }
 
+        private void UpdateSubTimelineProgress()
+        {
+            int pageIndex = Mathf.FloorToInt((float)((GetTotalProgressedTime() / 1000.0) / subTimelineTotalTime));
+            float subProgressActualVal = (GetTotalProgressedTime() - (long)(pageIndex * subTimelineTotalTime * 1000.0)) / (float)(subTimelineTotalTime * 1000.0);
+            float subProgressVal = subProgressActualVal - (float)(GetMainActualTimeOffset() / subTimelineTotalTime);
+            timeline_sub.SetProgress(subProgressVal);
+        }
+
+        private void UpdateSubtimelineCursorVisual()
+        {
+            int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
+            long mainTimelineStartVal = (long)(timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
+            long mainTimelineEndVal = (long)((timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1) + subTimelineTotalTime) * 1000.0);
+            timeline_sub.UpdateHandleText(eTimelineType, subTimelineTotalTime, (float)(mainTimelineStartVal / 1000.0));
+            timeline_sub.SetCursorVisible(mainTimelineStartVal <= GetTotalProgressedTime() && GetTotalProgressedTime() <= mainTimelineEndVal);
+        }
+
         IEnumerator Task_UpdateTime()
         {
             //double progress = GetTotalProgressedTime() / YourTotalTimeSet_Sec * 1000.0;
             long yourTimeSetMilliSec = (long)(YourTotalTimeSet_Sec * 1000.0);
             while (GetTotalProgressedTime() <= yourTimeSetMilliSec)
             {
+                
                 yield return new WaitUntil(CanRunTimeline);
 
                 int totalPageAmount = Mathf.CeilToInt((float)(YourTotalTimeSet_Sec / subTimelineTotalTime));
                 int pageIndex = Mathf.FloorToInt((float)((GetTotalProgressedTime() / 1000.0) / subTimelineTotalTime));
                 float mainProgressVal = totalPageAmount > 1 ? (float)((pageIndex * 2.0 / (totalPageAmount - 1)) / 2) : 0;
-                float subProgressVal = (GetTotalProgressedTime() - (long)(pageIndex * subTimelineTotalTime * 1000.0)) / (float)(subTimelineTotalTime * 1000.0);
-                
-                timeline_main.SetProgress_Actual(mainProgressVal, subProgressVal);
+                float subProgressActualVal = (GetTotalProgressedTime() - (long)(pageIndex * subTimelineTotalTime * 1000.0)) / (float)(subTimelineTotalTime * 1000.0);
+                float subProgressVal = subProgressActualVal - (float)(GetMainActualTimeOffset() / subTimelineTotalTime);
+                timeline_main.SetProgress_Actual(mainProgressVal, subProgressActualVal);
 
                 long subTimelineStartVal = (long)(timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
                 long subTimelineEndVal = (long)((timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) + subTimelineTotalTime) * 1000.0);
@@ -263,11 +285,8 @@ namespace MVDance.MapEditor
                 long mainTimelineActualStartVal = (long)(timeline_main.GetActualProgress() * subTimelineTotalTime * (totalPageAmount - 1) * 1000.0);
                 long mainTimelineEndVal = (long)((timeline_main.GetProgress() * subTimelineTotalTime * (totalPageAmount - 1) + subTimelineTotalTime) * 1000.0);
 
-                timeline_sub.SetProgress(subProgressVal);
-                timeline_sub.UpdateHandleText(eTimelineType, subTimelineTotalTime, (float)(mainTimelineActualStartVal / 1000.0));
-
-                //timeline_main.SyncProgressToActual();
-
+                UpdateSubTimelineProgress();
+                UpdateSubtimelineCursorVisual();
             }
         }
 

@@ -10,7 +10,11 @@ namespace MVDance.MapEditor
         [SerializeField] Scrollbar scroll;
         [SerializeField] TimelineInteractable handle;
         [SerializeField] Text handle_text;
+        [SerializeField] Image handle_touch_area;
+        [SerializeField] Image handle_image;
+        [SerializeField] Image handle_pin;
         [SerializeField] Text handle_text_copy;
+
 
         [Header("--- Grid Config ---")]
         [SerializeField] SubTimelineGrid sub_timeline_grid;
@@ -60,7 +64,9 @@ namespace MVDance.MapEditor
         }
         public void SetCursorVisible(bool bNewShouldVidible)
         {
-            handle_root_tr.gameObject.SetActive(bNewShouldVidible);
+            handle_image.color = new Color(handle_image.color.r, handle_image.color.g, handle_image.color.b, bNewShouldVidible ? 1 : 0);
+            handle_pin.color = new Color(handle_pin.color.r, handle_pin.color.g, handle_pin.color.b, bNewShouldVidible ? 1 : 0);
+            handle_text_copy.color = new Color(handle_text_copy.color.r, handle_text_copy.color.g, handle_text_copy.color.b, bNewShouldVidible ? 1 : 0);
         }
         private void Awake()
         {
