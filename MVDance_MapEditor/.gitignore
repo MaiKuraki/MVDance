@@ -62,3 +62,6 @@ crashlytics-build.properties
 # VSCode
 .vscode/
 .vsconfig
+
+# local package
+/[Pp]ackages/packages-lock.json
