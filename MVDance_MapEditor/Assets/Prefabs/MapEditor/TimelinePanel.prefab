@@ -1833,6 +1833,9 @@ MonoBehaviour:
   scroll: {fileID: 4877681455276845597}
   handle: {fileID: 4877681456188526388}
   handle_text: {fileID: 4877681454910989719}
+  handle_touch_area: {fileID: 4877681456158334643}
+  handle_image: {fileID: 4877681456188526394}
+  handle_pin: {fileID: 4877681454817155737}
   handle_text_copy: {fileID: 4877681455037469364}
   sub_timeline_grid: {fileID: 2116082118675571542}
 --- !u!1 &5452154137177403439
